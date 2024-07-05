@@ -80,11 +80,36 @@ const verify = asyncHandler(
 );
 
 const login = asyncHandler(
-    async (req, res) => {
+    async (req, res, next) => {
+
         const { email, password } = req.body;
 
-        
+        if ([email, password].some(field => field?.trim() === ""))
+            throw new ApiError(400, 'Please provide all required fields');
 
+        const user = await User.findOne({ email });
+        if (!user)
+            throw new ApiError(404, "User with email does not exist");
+
+        if (!user.verified)
+            throw new ApiError(401, "User is not verified", { id: user._id });
+
+        const isPasswordCorrect = await user.isPasswordCorrect(password);
+        if (!isPasswordCorrect)
+            throw new ApiError(401, "Password is incorrect");
+
+        const token = await user.generateToken();
+
+        const options = {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        };
+
+        res
+            .status(200)
+            .cookie("token", token, options)
+            .json(new ApiResponse(200, { user, token }, "User logged in successfully"));
     }
 );
 
