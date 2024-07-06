@@ -5,7 +5,7 @@ import { OtpVerification } from "../models/otpVerificationModel.js";
 import { ApiError } from "./ApiError.js";
 import { ApiResponse } from "./ApiResponse.js";
 
-const sendOtpMail = asyncHandler(async ({ _id, email }) => {
+const sendOtpMail = asyncHandler(async ( _id, email ) => {
     // Generate a 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000);
 

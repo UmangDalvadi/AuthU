@@ -1,8 +1,9 @@
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
-import { User } from "../models/userModel.js";
 import { sendOtpMail } from "../utils/sendOtpMailer.js";
+import { sendForgetPasswordMail } from "../utils/sendForgetPasswordMailer.js"
+import { User } from "../models/userModel.js";
 import { OtpVerification } from "../models/otpVerificationModel.js";
 
 const register = asyncHandler(async (req, res) => {
@@ -32,7 +33,7 @@ const register = asyncHandler(async (req, res) => {
     }
 
     try {
-        await sendOtpMail(user, res);
+        await sendOtpMail(user._id, user.email);
     } catch (error) {
         throw new ApiError(500, "Failed to send OTP email");
     }
@@ -127,11 +128,77 @@ const logout = asyncHandler(
     }
 );
 
+const resendOtp = asyncHandler(
+    async (req, res) => {
+        const { userId, email } = req.body;
 
+        if (!email || !userId)
+            throw new ApiError(400, "Empty details are not allowed!");
+
+        const user = await User.findById({ _id: userId });
+        if (!user)
+            throw new ApiError(400, "User not found, register first");
+
+        const isOtpVerificationRecord = await OtpVerification.findOne({ userId });
+        if (isOtpVerificationRecord)
+            await OtpVerification.deleteOne({ userId });
+
+        try {
+            await sendOtpMail(userId, email);
+        } catch (error) {
+            throw new ApiError(500, "Failed to send OTP email");
+        }
+
+        return res
+            .status(200)
+            .json(new ApiResponse(200, { userId }, "Otp send successfully"));
+    }
+);
+
+const forgetPassword = asyncHandler(
+    async (req, res) => {
+        const { email } = req.body;
+
+        if (!email)
+            throw new ApiError(400, "Empty details are not allowed!");
+
+        const user = await User.findOne({ email });
+        if (!user)
+            throw new ApiError(400, "User not found!!");
+
+        await sendForgetPasswordMail(email);
+        return res
+            .status(200)
+            .json(new ApiResponse(200, {}, "Password reset email sent successfully"));
+    }
+);
+
+const updatePassword = asyncHandler(
+    async (req, res) => {
+        const { userId, newPassword } = req.body;
+
+        if (!userId || !newPassword)
+            throw new ApiError(400, "Empty details are not allowed!");
+
+        const user = await User.findOne({ _id: userId });
+        if (!user)
+            throw new ApiError(400, "User not found!!");
+
+        user.password = newPassword;
+        await user.save();
+
+        return res
+            .status(200)
+            .json(new ApiResponse(200, { userId }, "Password reset successfully"));
+    }
+);
 
 export {
     register,
     verify,
     login,
-    logout
+    logout,
+    resendOtp,
+    forgetPassword,
+    updatePassword
 };
