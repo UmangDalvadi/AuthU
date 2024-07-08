@@ -1,8 +1,9 @@
 import { Router } from "express";
 const router = Router();
 
-import { forgetPassword, login, logout, register, resendOtp, updatePassword, verify } from "../controllers/authController.js";
+import { forgetPassword, login, logout, register, resendOtp, updatePassword, verify, googleLogin } from "../controllers/authController.js";
 
+router.route("/google-login").post(googleLogin);
 router.route(`/register`).post(register);
 router.route(`/verify`).post(verify);
 router.route(`/login`).post(login);

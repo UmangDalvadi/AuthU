@@ -1,10 +1,68 @@
-import { asyncHandler } from "../utils/asyncHandler.js"
+import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
-import { sendOtpMail } from "../utils/sendOtpMailer.js";
-import { sendForgetPasswordMail } from "../utils/sendForgetPasswordMailer.js"
 import { User } from "../models/userModel.js";
-import { OtpVerification } from "../models/otpVerificationModel.js";
+import { OAuth2Client } from "google-auth-library";
+
+
+const clientId = '129382701246-ioed97nm4c7srdbsajdg994pvi54o0as.apps.googleusercontent.com';
+const client = new OAuth2Client(clientId);
+
+const googleLogin = asyncHandler(async (req, res) => {
+    try {
+        const { token } = req.body;
+        console.log("Received token:", token); // Debug line
+
+        try {
+            const ticket = await client.verifyIdToken({
+                idToken: token,
+                audience: clientId,  // Replace with your client ID
+            });
+            const payload = ticket.getPayload();
+            const userId = payload['sub'];
+            // Additional verification and user handling logic here
+
+            return payload; // Return user information or handle as needed
+        } catch (error) {
+            console.error('Error verifying Google token:', error);
+            throw error; // Handle or propagate the error accordingly
+        }
+
+        const { sub, email, name } = payload;
+
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            console.log("User not found, creating new user"); // Debug line
+            user = await User.create({
+                firstname: name.split(" ")[0],
+                lastname: name.split(" ")[1] || '',
+                email,
+                role: "user",
+                verified: true,
+                password: sub, // Temporary password
+            });
+            console.log("New user created:", user); // Debug line
+        }
+
+        const jwtToken = user.generateToken();
+        console.log("Generated JWT Token:", jwtToken); // Debug line
+
+        const options = {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+        };
+
+        return res
+            .status(200)
+            .cookie("token", jwtToken, options)
+            .json(new ApiResponse(200, { user, token: jwtToken }, "User logged in successfully"));
+    } catch (error) {
+        console.error("Error during Google login:", error);
+        res.status(500).json(new ApiResponse(500, {}, "Internal Server Error"));
+    }
+});
 
 const register = asyncHandler(async (req, res) => {
     const { firstname, lastname, role, email, password } = req.body;
@@ -74,7 +132,7 @@ const verify = asyncHandler(
             return res
                 .status(200)
                 .cookie("token", token, options)
-                .json(new ApiResponse(200, { userId }, "Cookie sent & user verified"));
+                .json(new ApiResponse(200, { user, token }, "Cookie sent & user verified"));
         }
         throw new ApiError(400, "Invalid otp passed!");
     }
@@ -194,6 +252,7 @@ const updatePassword = asyncHandler(
 );
 
 export {
+    googleLogin,
     register,
     verify,
     login,
