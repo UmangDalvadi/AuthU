@@ -62,11 +62,11 @@ const forgetPassword = async (email) => {
     return response.data;
 };
 
-const updatePassword = async (userId, newPasword) => {
-
+const updatePassword = async (userId, newPassword) => {
+    console.log(userId, newPassword)
     const response = await axios.post(
         `${SERVER_DOMAIN}/api/v1/auth/update-password`,
-        { userId, newPasword },
+        { userId, newPassword },
         { withCredentials: true }
     );
 

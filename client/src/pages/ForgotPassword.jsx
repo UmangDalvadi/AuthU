@@ -4,6 +4,7 @@ import InputBox from "../components/InputBox";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
+import { forgetPassword } from "../services/authServices";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -15,27 +16,33 @@ const ForgotPassword = () => {
     console.log(e.target.value);
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const { email } = formData;
     const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
 
-   
     if (!email.length) {
       return toast.error("Email is required");
     }
     if (!emailRegex.test(email)) {
-        return toast.error("Email is not valid");
-      }
+      return toast.error("Email is not valid");
+    }
 
     console.log("Forgot Password");
-    toast.success("Reset link sent to your email", {
-      duration: 900,
-    });
-    setTimeout(() => {
-      navigate("/login");
-    }, 900);
+    forgetPassword(email)
+      .then(() => {
+        toast.success("Reset link sent to your email", {
+          duration: 900,
+        });
+        setTimeout(() => {
+          navigate("/login");
+        }, 900);
+      })
+      .catch((error) => {
+        if (error.response) {
+          toast.error(error.response.data.message);
+        }
+      });
   };
 
   return (
@@ -59,8 +66,8 @@ const ForgotPassword = () => {
           </div>
           <div>
             <InputBox
-              name="Email"
-              type="text"
+              name="email"
+              type="email"
               id="email"
               value=""
               placeholder="Enter your email"

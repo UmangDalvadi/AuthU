@@ -54,7 +54,7 @@ const CustomRoutes = () => {
         />
 
         <Route
-          path="/reset-password/:token"
+          path="/reset-password/:userId"
           element={
             <PublicRoute>
               <UpdatePassword />

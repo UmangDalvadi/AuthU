@@ -2,20 +2,23 @@ import React, { useState } from "react";
 import AnimationWrapper from "../common/AnimationWrapper";
 import { Toaster, toast } from "react-hot-toast";
 import InputBox from "../components/InputBox";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { updatePassword } from "../services/authServices";
+import { useUserContext } from "../contexts/userContext";
 
 const UpdatePassword = () => {
   const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
-
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
   });
+  const { userId } = useParams();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const { password, confirmPassword } = formData;
-
+    console.log(password, confirmPassword);
     if (!password.length) {
       return toast.error("Password is required");
     }
@@ -35,13 +38,21 @@ const UpdatePassword = () => {
       return toast.error("Password and Confirm Password must be the same");
     }
 
-    console.log("Update Password");
-    toast.success("Password updated successfully", {
-      duration: 900,
-    });
-    setTimeout(() => {
-      navigate("/login");
-    }, 900);
+    updatePassword(userId, password)
+      .then(() => {
+        console.log("Update Password");
+        toast.success("Password updated successfully", {
+          duration: 900,
+        });
+        setTimeout(() => {
+          navigate("/login");
+        }, 900);
+      })
+      .catch((error) => {
+        if (error.response) {
+          toast.error(error.response.data.message);
+        }
+      });
   };
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
