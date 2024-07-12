@@ -52,7 +52,7 @@ export const handleGoogleLogin = asyncHandler(async (req, res) => {
 
         const options = {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === 'production',
             sameSite: "none",
         };
 
@@ -127,7 +127,7 @@ export const handleVerify = asyncHandler(
 
             const options = {
                 httpOnly: true,
-                secure: true,
+                secure: process.env.NODE_ENV === 'production',
                 sameSite: "none"
             }
 
@@ -163,7 +163,7 @@ export const handleLogin = asyncHandler(
 
         const options = {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === 'production',
             sameSite: "none"
         };
 
@@ -178,10 +178,10 @@ export const handleLogout = asyncHandler(
     async (req, res) => {
         const option = {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === 'production',
             path: "/",
-        }
-    
+            sameSite: "none"
+        };
 
         res
             .clearCookie("token", option)
