@@ -7,7 +7,6 @@ import { TOKEN_SECRET } from "../config/serverConfig.js";
 const authMiddleware = (requiredRoles = []) => asyncHandler(
     async (req, res, next) => {
         const token = req.cookies?.token;
-
         if (!token) {
             throw new ApiError(401, "Unauthorized request: No token provided");
         }
@@ -18,9 +17,7 @@ const authMiddleware = (requiredRoles = []) => asyncHandler(
         } catch (error) {
             throw new ApiError(401, "Unauthorized request: Invalid access token");
         }
-
-        const user = await User.findById(decodedToken?._id).select("-password");
-
+        const user = await User.findById(decodedToken?.id).select("-password");
         if (!user) {
             throw new ApiError(401, "Unauthorized request: User not found");
         }

@@ -1,16 +1,14 @@
-// import React from 'react'
-
-import Navbar from "./components/Navbar"
-import CustomRoutes from "./routes/CustomRoutes"
-
+import Navbar from "./components/Navbar";
+import { UserContextProvider } from "./contexts/userContext";
+import CustomRoutes from "./routes/CustomRoutes";
 
 const App = () => {
   return (
-    <div>
+    <UserContextProvider>
       <Navbar />
       <CustomRoutes />
-    </div>
-  )
-}
+    </UserContextProvider>
+  );
+};
 
-export default App
+export default App;

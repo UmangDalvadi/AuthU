@@ -5,6 +5,7 @@ import { User } from "../models/userModel.js";
 import { OAuth2Client } from "google-auth-library";
 import { sendOtpMail } from "../utils/sendOtpMailer.js"
 import { sendForgetPasswordMail } from "../utils/sendForgetPasswordMailer.js"
+import { OtpVerification } from "../models/otpVerificationModel.js";
 
 const clientId = '129382701246-39ntu64kr3pvpebusg5plpg5p15fffac.apps.googleusercontent.com';
 const client = new OAuth2Client(clientId);
@@ -133,7 +134,7 @@ export const handleVerify = asyncHandler(
             return res
                 .status(200)
                 .cookie("token", token, options)
-                .json(new ApiResponse(200, { user, token }, "Cookie sent & user verified"));
+                .json(new ApiResponse(200, { user, token }, "User verified"));
         }
         throw new ApiError(400, "Invalid otp passed!");
     }
@@ -177,12 +178,14 @@ export const handleLogout = asyncHandler(
     async (req, res) => {
         const option = {
             httpOnly: true,
-            secure: true
+            secure: true,
+            path: "/",
         }
+    
 
         res
-            .status(200)
             .clearCookie("token", option)
+            .status(200)
             .json(new ApiResponse(200, {}, "User logged out successfully"));
     }
 );

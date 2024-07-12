@@ -1,31 +1,25 @@
 import axios from "axios";
 
-const SERVER_DOMAIN = import.meta.url.VITE_SERVER_URL;
+const SERVER_DOMAIN = import.meta.env.VITE_SERVER_URL;
+console.log(SERVER_DOMAIN);
 
-const registerUser = async (formData) => {
+const authUser = async (serverRoute, formData) => {
 
-    const response = await axios.post(
-        `${SERVER_DOMAIN}/api/v1/auth/register`,
+    try {
+      const response = await axios.post(
+        `${SERVER_DOMAIN}/api/v1/auth/${serverRoute}`,
         formData,
         { withCredentials: true }
-    );
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
 
-    return response.data;
-};
-
-const loginUser = async (formData) => {
-
-    const response = await axios.post(
-        `${SERVER_DOMAIN}/api/v1/auth/login`,
-        formData,
-        { withCredentials: true }
-    );
-
-    return response.data;
-};
 
 const verifyUser = async (otp, userId) => {
-
+    console.log("otp", otp);
     const response = await axios.post(
         `${SERVER_DOMAIN}/api/v1/auth/verify`,
         { otp, userId },
@@ -41,6 +35,7 @@ const logoutUser = async () => {
         `${SERVER_DOMAIN}/api/v1/auth/logout`,
         { withCredentials: true }
     );
+    console.log(response.data)
 
     return response.data;
 };
@@ -79,13 +74,15 @@ const updatePassword = async (userId, newPasword) => {
 };
 
 const getUserDetails = async () => {
-    const response = await axios.get(`${SERVER_DOMAIN}/api/v1/auth/me`);
+    const response = await axios.get(`${SERVER_DOMAIN}/api/v1/auth/me`,
+        { withCredentials: true }
+    );
+    console.log(response.data)
     return response.data;
 };
 
 export {
-    registerUser,
-    loginUser,
+    authUser,
     verifyUser,
     logoutUser,
     resendOtp,
