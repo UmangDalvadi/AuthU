@@ -1,12 +1,23 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import { getUserDetails } from "../services/authServices.jsx";
 
 const UserContext = createContext();
 
-const UserContextProvider = ({ children }) => {
+const UserContextProvider = async ({ children }) => {
 
-    const [isAuth, setIsAuth] = useState("");
+    const [isAuth, setIsAuth] = useState(false);
     const [userId, setUserId] = useState("");
     const [userRole, setUserRole] = useState("");
+
+    useEffect(() => {
+        const response = getUserDetails();
+        console.log(response);
+        if (response) {
+            setIsAuth(true);
+            setUserId(response.user.id);
+            setUserRole(response.user.role);
+        }
+    }, [isAuth]);
 
     return <UserContext.Provider
         value={{

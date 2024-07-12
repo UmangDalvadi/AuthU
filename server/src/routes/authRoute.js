@@ -1,15 +1,27 @@
 import { Router } from "express";
 const router = Router();
 
-import { forgetPassword, login, logout, register, resendOtp, updatePassword, verify, googleLogin } from "../controllers/authController.js";
+import {
+  handleForgetPassword,
+  handleLogin,
+  handleLogout,
+  handleRegister,
+  handleResendOtp,
+  handleUpdatePassword,
+  handleVerify,
+  handleGoogleLogin,
+  getUserDetails
+} from "../controllers/authController.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
 
-router.route("/google-login").post(googleLogin);
-router.route(`/register`).post(register);
-router.route(`/verify`).post(verify);
-router.route(`/login`).post(login);
-router.route(`/logout`).post(logout);
-router.route(`/resend-otp`).post(resendOtp);
-router.route(`/forget-password`).post(forgetPassword);
-router.route(`/update-password`).post(updatePassword);
+router.route("/google-login").post(handleGoogleLogin);
+router.route("/register").post(handleRegister);
+router.route("/verify").post(handleVerify);
+router.route("/login").post(handleLogin);
+router.route("/logout").post(handleLogout);
+router.route("/resend-otp").post(handleResendOtp);
+router.route("/forget-password").post(handleForgetPassword);
+router.route("/update-password").post(handleUpdatePassword);
+router.route("/me").get(authMiddleware(['user', 'admin']), getUserDetails);
 
 export default router;

@@ -14,9 +14,6 @@ import UpdatePassword from '../pages/UpdatePassword';
 
 import { useUserContext } from '../context/userContext';
 
-
-
-
 const CustomRoutes = () => {
 
     const { userRole } = useUserContext();

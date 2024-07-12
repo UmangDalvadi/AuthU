@@ -3,12 +3,13 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/userModel.js";
 import { OAuth2Client } from "google-auth-library";
+import { sendOtpMail } from "../utils/sendOtpMailer.js"
+import { sendForgetPasswordMail } from "../utils/sendForgetPasswordMailer.js"
 
-
-const clientId = '129382701246-ioed97nm4c7srdbsajdg994pvi54o0as.apps.googleusercontent.com';
+const clientId = '129382701246-39ntu64kr3pvpebusg5plpg5p15fffac.apps.googleusercontent.com';
 const client = new OAuth2Client(clientId);
 
-const googleLogin = asyncHandler(async (req, res) => {
+export const handleGoogleLogin = asyncHandler(async (req, res) => {
     try {
         const { token } = req.body;
         console.log("Received token:", token); // Debug line
@@ -64,7 +65,7 @@ const googleLogin = asyncHandler(async (req, res) => {
     }
 });
 
-const register = asyncHandler(async (req, res) => {
+export const handleRegister = asyncHandler(async (req, res) => {
     const { firstname, lastname, role, email, password } = req.body;
 
     if ([firstname, lastname, email, password].some(field => !field || field.trim() === '')) {
@@ -101,7 +102,7 @@ const register = asyncHandler(async (req, res) => {
     )
 });
 
-const verify = asyncHandler(
+export const handleVerify = asyncHandler(
     async (req, res) => {
         const { otp, userId } = req.body;
 
@@ -138,7 +139,7 @@ const verify = asyncHandler(
     }
 );
 
-const login = asyncHandler(
+export const handleLogin = asyncHandler(
     async (req, res, next) => {
 
         const { email, password } = req.body;
@@ -172,7 +173,7 @@ const login = asyncHandler(
     }
 );
 
-const logout = asyncHandler(
+export const handleLogout = asyncHandler(
     async (req, res) => {
         const option = {
             httpOnly: true,
@@ -186,7 +187,7 @@ const logout = asyncHandler(
     }
 );
 
-const resendOtp = asyncHandler(
+export const handleResendOtp = asyncHandler(
     async (req, res) => {
         const { userId, email } = req.body;
 
@@ -213,7 +214,7 @@ const resendOtp = asyncHandler(
     }
 );
 
-const forgetPassword = asyncHandler(
+export const handleForgetPassword = asyncHandler(
     async (req, res) => {
         const { email } = req.body;
 
@@ -231,7 +232,7 @@ const forgetPassword = asyncHandler(
     }
 );
 
-const updatePassword = asyncHandler(
+export const handleUpdatePassword = asyncHandler(
     async (req, res) => {
         const { userId, newPassword } = req.body;
 
@@ -251,13 +252,9 @@ const updatePassword = asyncHandler(
     }
 );
 
-export {
-    googleLogin,
-    register,
-    verify,
-    login,
-    logout,
-    resendOtp,
-    forgetPassword,
-    updatePassword
-};
+export const getUserDetails = asyncHandler(
+    async (req, res) => {
+        const user = await User.findById(req.user.id).select("-password");
+        return res.status(200).json(new ApiResponse(200, { user }, "User fetched successfully"));
+    }
+);

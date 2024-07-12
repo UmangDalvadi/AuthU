@@ -78,6 +78,11 @@ const updatePassword = async (userId, newPasword) => {
     return response.data;
 };
 
+const getUserDetails = async () => {
+    const response = await axios.get(`${SERVER_DOMAIN}/api/v1/auth/me`);
+    return response.data;
+};
+
 export {
     registerUser,
     loginUser,
@@ -85,5 +90,6 @@ export {
     logoutUser,
     resendOtp,
     forgetPassword,
-    updatePassword
+    updatePassword,
+    getUserDetails
 };
