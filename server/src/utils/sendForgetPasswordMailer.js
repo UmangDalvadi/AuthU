@@ -2,6 +2,8 @@ import nodemailer from "nodemailer";
 import { asyncHandler } from "./asyncHandler.js";
 import { ADMIN_EMAIL, ADMIN_PASSWORD, FRONTEND_URL } from "../config/serverConfig.js";
 import { ApiError } from "./ApiError.js";
+import bcrypt from "bcrypt";
+import { User } from "../models/userModel.js";
 
 const sendForgetPasswordMail = asyncHandler(async (email) => {
     // Create a transporter object using SMTP transport
@@ -14,8 +16,10 @@ const sendForgetPasswordMail = asyncHandler(async (email) => {
     });
 
     const hashedMail = await bcrypt.hash(email, 10);
+    const user = await User.findOne({ email });
 
-    const resetUrl = `${FRONTEND_URL}/reset-password/${hashedMail}`;
+
+    const resetUrl = `${FRONTEND_URL}/reset-password/${user._id}`;
 
     const mailOptions = {
         from: ADMIN_EMAIL,

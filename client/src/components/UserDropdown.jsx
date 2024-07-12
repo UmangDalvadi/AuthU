@@ -28,9 +28,8 @@ const UserDropdown = ({ mobile }) => {
         toast.success("Logged out successfully", {
           duration: 1000,
         });
-        setTimeout(() => {
-          navigate("/login");
-        }, 1000);
+        setIsAuth(false);
+        navigate("/login");
       }
     } catch (error) {
       console.error("Error logging out:", error);
