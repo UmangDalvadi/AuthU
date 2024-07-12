@@ -59,7 +59,7 @@ const CustomRoutes = () => {
                 />
 
                 <Route
-                    path='/update-password'
+                    path='/reset-password/:token'
                     element={
                         <PublicRoute>
                             <UpdatePassword />

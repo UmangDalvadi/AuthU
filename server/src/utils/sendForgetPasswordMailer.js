@@ -13,7 +13,9 @@ const sendForgetPasswordMail = asyncHandler(async (email) => {
         }
     });
 
-    const resetUrl= `${FRONTEND_URL}/forget-password`;
+    const hashedMail = await bcrypt.hash(email, 10);
+
+    const resetUrl = `${FRONTEND_URL}/reset-password/${hashedMail}`;
 
     const mailOptions = {
         from: ADMIN_EMAIL,
