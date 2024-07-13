@@ -1,13 +1,20 @@
 import Navbar from "./components/Navbar";
-import { UserContextProvider } from "./contexts/userContext";
+import { useUserContext } from "./contexts/userContext";
 import CustomRoutes from "./routes/CustomRoutes";
 
 const App = () => {
+  const { isLoading } = useUserContext();
   return (
-    <UserContextProvider>
-      <Navbar />
-      <CustomRoutes />
-    </UserContextProvider>
+    <>
+      {isLoading ? (
+        <div className="h-[80vh] w-full flex justify-center items-center">Loading...</div>
+      ) : (
+        <>
+          <Navbar />
+          <CustomRoutes />
+        </>
+      )}
+    </>
   );
 };
 

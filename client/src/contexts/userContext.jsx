@@ -7,6 +7,7 @@ const UserContextProvider = ({ children }) => {
   const [isAuth, setIsAuth] = useState(false);
   const [userId, setUserId] = useState("");
   const [userRole, setUserRole] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -18,8 +19,10 @@ const UserContextProvider = ({ children }) => {
           setUserId(response.user.id);
           setUserRole(response.user.role);
         }
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching user details:", error);
+        setIsLoading(false);
       }
     };
 
@@ -39,6 +42,7 @@ const UserContextProvider = ({ children }) => {
         setUserId,
         userRole,
         setUserRole,
+        isLoading,
       }}
     >
       {children}

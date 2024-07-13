@@ -26,15 +26,17 @@ const UserDropdown = ({ mobile }) => {
       const response = await logoutUser();
       if (response.success) {
         toast.success("Logged out successfully", {
-          duration: 1000,
+          duration: 900,
         });
-        setIsAuth(false); // Update the authentication state
-        navigate("/login"); // Immediately navigate to the login page
+        setTimeout(() => {
+          setIsAuth(false); // Update the authentication state
+          navigate("/login"); // Immediately navigate to the login page
+        }, 900);
       }
     } catch (error) {
       console.error("Error logging out:", error);
       toast.error("Error logging out. Please try again", {
-        duration: 1000,
+        duration: 900,
       });
     }
   };

@@ -40,14 +40,14 @@ const UserAuthForm = ({ type }) => {
       } catch (error) {
         if (error.response.data.message == "User is not verified") {
           toast.error(error.response.data.message, {
-            duration: 900,
+            duration: 500,
           });
           setTimeout(() => {
             navigate("/verifyOtp");
-          }, 900);
+          }, 500);
         } else {
           toast.error(error.response.data.message, {
-            duration: 900,
+            duration: 500,
           });
         }
       }
