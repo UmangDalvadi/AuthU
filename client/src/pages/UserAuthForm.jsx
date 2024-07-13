@@ -13,7 +13,7 @@ const UserAuthForm = ({ type }) => {
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
-    role: "",
+    role: "user",
     email: "",
     password: "",
     confirmPassword: "",
@@ -32,23 +32,23 @@ const UserAuthForm = ({ type }) => {
         const response = data;
         setUser(response.data.user);
         toast.success(response.message, {
-          duration: 900,
+          duration: 1000,
         });
         setTimeout(() => {
           setIsAuth(true);
           navigate("/");
-        }, 900);
+        }, 1000);
       } catch (error) {
         if (error.response.data.message == "User is not verified") {
           toast.error(error.response.data.message, {
-            duration: 500,
+            duration: 1000,
           });
           setTimeout(() => {
             navigate("/verifyOtp");
-          }, 500);
+          }, 1000);
         } else {
           toast.error(error.response.data.message, {
-            duration: 500,
+            duration: 1000,
           });
         }
       }

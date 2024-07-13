@@ -35,9 +35,9 @@ const Navbar = () => {
         <div className="hidden md:flex md:w-2/3 justify-end items-center gap-8">
           {isAuth ? (
             <>
-              <Link to="/" className="text-xl">
+              {/* <Link to="/" className="text-xl">
                 Ask a Question
-              </Link>
+              </Link> */}
               <UserDropdown />
             </>
           ) : (
