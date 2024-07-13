@@ -11,72 +11,82 @@ import UpdatePassword from "../pages/UpdatePassword";
 import ForgotPassword from "../pages/ForgotPassword";
 
 import { useUserContext } from "../contexts/userContext";
+import UserProfile from "../pages/UserProfile";
 
 const CustomRoutes = () => {
   const { userRole } = useUserContext();
 
   return (
-      <Routes>
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <UserAuthForm type="login" />
-            </PublicRoute>
-          }
-        />
+    <Routes>
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <UserAuthForm type="login" />
+          </PublicRoute>
+        }
+      />
 
-        <Route
-          path="/register"
-          element={
-            <PublicRoute>
-              <UserAuthForm type="register" />
-            </PublicRoute>
-          }
-        />
+      <Route
+        path="/register"
+        element={
+          <PublicRoute>
+            <UserAuthForm type="register" />
+          </PublicRoute>
+        }
+      />
 
-        <Route
-          path="/verifyOtp"
-          element={
-            <PublicRoute>
-              <VerifyOtp />
-            </PublicRoute>
-          }
-        />
+      <Route
+        path="/verifyOtp"
+        element={
+          <PublicRoute>
+            <VerifyOtp />
+          </PublicRoute>
+        }
+      />
 
-        <Route
-          path="/forgot-password"
-          element={
-            <PublicRoute>
-              <ForgotPassword/>
-            </PublicRoute>
-          }
-        />
+      <Route
+        path="/forgot-password"
+        element={
+          <PublicRoute>
+            <ForgotPassword />
+          </PublicRoute>
+        }
+      />
 
-        <Route
-          path="/reset-password/:userId"
-          element={
-            <PublicRoute>
-              <UpdatePassword />
-            </PublicRoute>
-          }
-        />
+      <Route
+        path="/reset-password/:userId"
+        element={
+          <PublicRoute>
+            <UpdatePassword />
+          </PublicRoute>
+        }
+      />
 
-        <Route
-          path="/"
-          element={
-            userRole == "admin" ? (
-              <ProtectedRoute role="admin">
-                <AdminDashboard />
-              </ProtectedRoute>
-            ) : (
-              <ProtectedRoute role="user">
-                <UserDashboard />
-              </ProtectedRoute>
-            )
-          }
-        />
-      </Routes>
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute role={userRole}>
+            <UserProfile />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/"
+        element={
+          userRole == "admin" ? (
+            <ProtectedRoute role="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          ) : (
+            <ProtectedRoute role="user">
+              <UserDashboard />
+            </ProtectedRoute>
+          )
+        }
+      />
+    </Routes>
   );
 };
 

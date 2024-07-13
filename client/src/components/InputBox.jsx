@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaEyeSlash } from "react-icons/fa";
+import { FaUserLarge } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
+import { LuUser2 } from "react-icons/lu";
+
 
 const InputBox = ({
   disable,
@@ -18,6 +21,10 @@ const InputBox = ({
   const [confirmPassword, setConfirmPassword] = useState(false);
   const renderIcon = () => {
     switch (icon) {
+      case "firstname":
+        return <FaUserLarge className="text-gray-400" />;
+      case "lastname":
+        return <LuUser2 className="text-gray-400 text-xl" />;
       case "email":
         return <MdOutlineMailOutline className="text-gray-400" />;
       case "password":

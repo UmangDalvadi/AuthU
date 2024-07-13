@@ -113,7 +113,7 @@ const UserAuthForm = ({ type }) => {
                   id="firstname"
                   value={formData.firstname}
                   placeholder="Firstname"
-                  icon="email"
+                  icon="firstname"
                   handleChange={handleChange}
                 />
                 <InputBox
@@ -122,7 +122,7 @@ const UserAuthForm = ({ type }) => {
                   id="lastname"
                   value={formData.lastname}
                   placeholder="Lastname"
-                  icon="email"
+                  icon="lastname"
                   handleChange={handleChange}
                 />
               </div>
