@@ -128,7 +128,7 @@ export const handleVerify = asyncHandler(
             const options = {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: "none"
+                // sameSite: "none"
             }
 
             return res
@@ -164,7 +164,7 @@ export const handleLogin = asyncHandler(
         const options = {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: "none"
+            // sameSite: "none"
         };
 
         res
@@ -179,8 +179,8 @@ export const handleLogout = asyncHandler(
         const option = {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            path: "/",
-            sameSite: "none"
+            // path: "/",
+            // sameSite: "none"
         };
 
         res

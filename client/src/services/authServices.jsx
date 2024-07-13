@@ -33,6 +33,7 @@ const logoutUser = async () => {
 
     const response = await axios.post(
         `${SERVER_DOMAIN}/api/v1/auth/logout`,
+        {},
         { withCredentials: true }
     );
     console.log(response.data)
