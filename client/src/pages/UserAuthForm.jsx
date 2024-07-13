@@ -13,12 +13,12 @@ const UserAuthForm = ({ type }) => {
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
-    role: "user",
+    role: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-  const { setUserId, setIsAuth } = useUserContext();
+  const { setUserId, setIsAuth, setUser } = useUserContext();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -30,6 +30,7 @@ const UserAuthForm = ({ type }) => {
       try {
         const data = await authUser(serverRoute, formData);
         const response = data;
+        setUser(response.data.user);
         toast.success(response.message, {
           duration: 900,
         });
@@ -52,9 +53,12 @@ const UserAuthForm = ({ type }) => {
         }
       }
     } else {
+      let loading = toast.loading("Please wait...");
       try {
         const response = await authUser(serverRoute, formData);
         setUserId(response.data.user._id);
+        toast.dismiss(loading);
+        setUser(response.data.user);
         toast.success(`Verification code sent to your email ${formData.email}`,{
           duration: 900,
         });
@@ -62,6 +66,7 @@ const UserAuthForm = ({ type }) => {
           navigate("/verifyOtp");
         }, 900);
       } catch (error) {
+        toast.dismiss(loading);
         let { data } = error.response;
         let message = data.message;
         toast.error(message, {
@@ -106,7 +111,7 @@ const UserAuthForm = ({ type }) => {
                   name="firstname"
                   type="text"
                   id="firstname"
-                  value=""
+                  value={formData.firstname}
                   placeholder="Firstname"
                   icon="email"
                   handleChange={handleChange}
@@ -115,7 +120,7 @@ const UserAuthForm = ({ type }) => {
                   name="lastname"
                   type="text"
                   id="lastname"
-                  value=""
+                  value={formData.lastname}
                   placeholder="Lastname"
                   icon="email"
                   handleChange={handleChange}
@@ -134,7 +139,7 @@ const UserAuthForm = ({ type }) => {
             name="email"
             type="email"
             id="email"
-            value=""
+            value={formData.email}
             placeholder="Email"
             icon="email"
             handleChange={handleChange}
@@ -143,7 +148,7 @@ const UserAuthForm = ({ type }) => {
             name="password"
             type="password"
             id="password"
-            value=""
+            value={formData.password}
             placeholder="Password"
             icon="password"
             handleChange={handleChange}
@@ -153,7 +158,7 @@ const UserAuthForm = ({ type }) => {
               name="confirmPassword"
               type="password"
               id="confirmPassword"
-              value=""
+              value={formData.confirmPassword}
               placeholder="Confirm Password"
               icon="password"
               handleChange={handleChange}

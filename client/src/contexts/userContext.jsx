@@ -6,6 +6,7 @@ const UserContext = createContext();
 const UserContextProvider = ({ children }) => {
   const [isAuth, setIsAuth] = useState(false);
   const [userId, setUserId] = useState("");
+  const [user, setUser] = useState({});
   const [userRole, setUserRole] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -14,10 +15,13 @@ const UserContextProvider = ({ children }) => {
       try {
         const response = await getUserDetails();
         console.log(response);
+        const { user } = response.data;
+
         if (response) {
           setIsAuth(true);
-          setUserId(response.user.id);
-          setUserRole(response.user.role);
+          setUserId(user.id);
+          setUserRole(user.role);
+          setUser(user);
         }
         setIsLoading(false);
       } catch (error) {
@@ -27,11 +31,9 @@ const UserContextProvider = ({ children }) => {
     };
 
     fetchUserDetails();
-  }, [
-    isAuth,
-    userId,
-    userRole,
-  ]);
+  }, [isAuth, userId, userRole]);
+
+  console.log(user);
 
   return (
     <UserContext.Provider
@@ -43,6 +45,8 @@ const UserContextProvider = ({ children }) => {
         userRole,
         setUserRole,
         isLoading,
+        user,
+        setUser,
       }}
     >
       {children}

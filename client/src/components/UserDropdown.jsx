@@ -10,9 +10,9 @@ import { logoutUser } from "../services/authServices";
 
 const UserDropdown = ({ mobile }) => {
   const [open, setOpen] = useState(false);
-  const { setIsAuth } = useUserContext();
+  const { setIsAuth, user } = useUserContext();
   const navigate = useNavigate();
-
+  console.log("User : ", user);
   const links = [
     {
       id: 1,
@@ -57,7 +57,7 @@ const UserDropdown = ({ mobile }) => {
           >
             <span className="flex gap-1.5 items-center">
               <CiUser className="w-6 h-6 rounded-full" />
-              <span className="font-medium">Monil</span>
+              <span className="font-medium">{user.firstname}</span>
             </span>
             <div>
               {open ? (

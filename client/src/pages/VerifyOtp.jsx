@@ -1,14 +1,14 @@
 import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useUserContext } from "../contexts/userContext";
-import { verifyUser } from "../services/authServices";
+import { verifyUser, resendOtp } from "../services/authServices";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const VerifyOtp = () => {
   const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
-  const { userId, setIsAuth } = useUserContext();
+  const { userId, setIsAuth, user } = useUserContext();
   const navigate = useNavigate();
 
   const inputRefs = useRef([]);
@@ -43,22 +43,22 @@ const VerifyOtp = () => {
     // Call a function to handle OTP verification
     handleOTPVerification(otp);
   };
+
   const handleOTPVerification = async (otp) => {
     console.log(otp);
     try {
       const data = await verifyUser(otp, userId);
-      setIsAuth(true);
       toast.success(data.message, {
         duration: 900,
       });
       setTimeout(() => {
-        navigate("/login");
+        navigate("/");
+        setIsAuth(true);
       }, 900);
     } catch (error) {
       console.log("Error : ", error);
-      if (error.response.data.message == "User is not verified") {
+      if (error.response.data.message === "User is not verified") {
         toast.error(error.response.data.message);
-        // localStorage.setItem("token", error.response.data.data);
         setTimeout(() => {
           navigate("/verify");
         }, 900);
@@ -70,6 +70,21 @@ const VerifyOtp = () => {
     }
   };
 
+  const resendOTP = async () => {
+    let loading = toast.loading("Please wait...");
+    try {
+      const data = await resendOtp(userId, user.email);
+      toast.dismiss(loading);
+      toast.success(data.message, {
+        duration: 900,
+      });
+    } catch (error) {
+      toast.dismiss(loading);
+      toast.error(error.response.data.message, {
+        duration: 900,
+      });
+    }
+  };
   return (
     <section className="h-cover flex items-center justify-center flex-col">
       <Toaster />
@@ -99,11 +114,20 @@ const VerifyOtp = () => {
       >
         Verify OTP
       </button>
-      <div className="flex mt-2">
-        Want to use different email?
-        <Link to="/register" className="underline text-black text-md ml-1">
-          Register
-        </Link>
+      <div className="flex flex-col md:flex-row">
+        <div className="flex mt-2">
+          Want to use different email?
+          <Link to="/register" className="underline text-black text-md ml-1">
+            Register
+          </Link>
+        </div>
+        <div className="flex mt-2">
+          <button 
+          onClick={resendOTP}
+          className="underline text-black text-md ml-1">
+            <span className="mr-1">|</span> Resend OTP
+          </button>
+        </div>
       </div>
     </section>
   );

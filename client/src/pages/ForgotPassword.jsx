@@ -29,8 +29,10 @@ const ForgotPassword = () => {
     }
 
     console.log("Forgot Password");
+    let loading = toast.loading("Please wait...");
     forgetPassword(email)
       .then(() => {
+        toast.dismiss(loading);
         toast.success("Reset link sent to your email", {
           duration: 900,
         });
