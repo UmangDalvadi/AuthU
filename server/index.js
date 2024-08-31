@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
     cors({
-        origin: [FRONTEND_URL, "*"],
+        origin: [FRONTEND_URL, "https://auth-u.vercel.app"],
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
         credentials: true,
         allowedHeaders: ["Content-Type", "Authorization"],
