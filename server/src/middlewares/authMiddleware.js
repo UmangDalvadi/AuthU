@@ -5,7 +5,7 @@ import { User } from "../models/userModel.js";
 import { TOKEN_SECRET } from "../config/serverConfig.js";
 
 const authMiddleware = (requiredRoles = []) => asyncHandler(
-    async (req, res, next) => {
+    async (req, _, next) => {
         const token = req.cookies?.token;
         if (!token) {
             throw new ApiError(401, "Unauthorized request: No token provided");

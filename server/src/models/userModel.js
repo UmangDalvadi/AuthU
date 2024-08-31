@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { TOKEN_SECRET, TOKEN_EXPIRY } from "../config/serverConfig.js";
+import { ROLES } from "../utils/constants.js";
 
 const userSchema = new Schema({
     firstname: {
@@ -17,8 +18,8 @@ const userSchema = new Schema({
     role: {
         type: String,
         required: true,
-        enum: ['user', 'admin'],
-        default: "user"
+        enum: Object.values(ROLES),
+        default: ROLES.USER
     },
     email: {
         type: String,
