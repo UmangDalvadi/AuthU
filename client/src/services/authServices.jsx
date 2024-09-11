@@ -4,19 +4,13 @@ const SERVER_DOMAIN = import.meta.env.VITE_SERVER_URL;
 console.log(SERVER_DOMAIN);
 
 const authUser = async (serverRoute, formData) => {
-
-    try {
-      const response = await axios.post(
+    const response = await axios.post(
         `${SERVER_DOMAIN}/api/v1/auth/${serverRoute}`,
         formData,
         { withCredentials: true }
-      );
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  };
-
+    );
+    return response.data;
+};
 
 const verifyUser = async (otp, userId) => {
     console.log("otp", otp);

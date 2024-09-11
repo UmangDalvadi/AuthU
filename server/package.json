@@ -5,23 +5,29 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon ./index.js"
+    "start": "concurrently \"nodemon index.js\" \"cd ../client && npm run dev\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "google-auth-library": "^9.11.0",
+    "google-auth-library": "^9.14.1",
     "http-status-codes": "^2.3.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.4",
     "nodemailer": "^6.9.14",
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "opn": "^6.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "opn-cli": "^5.0.0"
   }
 }

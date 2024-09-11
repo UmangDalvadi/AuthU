@@ -8,6 +8,7 @@ import { authUser } from "../services/authServices";
 import Dropdown from "../components/InputDropdown";
 import { useUserContext } from "../contexts/userContext";
 import { validateFormData } from "../utils/validateFormData";
+import GoogleSignInButton from "../components/GoogleSignInButton";
 
 const UserAuthForm = ({ type }) => {
   const [formData, setFormData] = useState({
@@ -59,7 +60,7 @@ const UserAuthForm = ({ type }) => {
         setUserId(response.data.user._id);
         toast.dismiss(loading);
         setUser(response.data.user);
-        toast.success(`Verification code sent to your email ${formData.email}`,{
+        toast.success(`Verification code sent to your email ${formData.email}`, {
           duration: 900,
         });
         setTimeout(() => {
@@ -94,6 +95,12 @@ const UserAuthForm = ({ type }) => {
     { label: "User", value: "user" },
     { label: "Admin", value: "admin" },
   ];
+
+  const handleGoogleSignIn = async (response) => {
+    setUser(response.user); // Set user data
+    setIsAuth(true); // Set authentication state
+    navigate("/"); // Redirect to dashboard
+  };
 
   return (
     <AnimationWrapper keyValue={type}>
@@ -167,6 +174,11 @@ const UserAuthForm = ({ type }) => {
           <button className="btn-dark mt-11 center" onClick={handleSubmit}>
             {type}
           </button>
+
+          {/* Google Sign-In Button */}
+          <div className="mt-4 flex justify-center">
+            <GoogleSignInButton onSuccess={handleGoogleSignIn} />
+          </div>
 
           <p className="mt-10 text-dark-grey text-xl text-center">
             {type === "login" ? (

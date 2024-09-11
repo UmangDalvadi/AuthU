@@ -6,6 +6,45 @@ import { sendOtpMail } from "../utils/sendOtpMailer.js";
 import { sendForgetPasswordMail } from "../utils/sendForgetPasswordMailer.js";
 import { OtpVerification } from "../models/otpVerificationModel.js";
 import { COOKIE_OPTIONS, ERROR_MESSAGES, RESPONSE_MESSAGES } from "../utils/constants.js";
+// import { OAuth2Client } from 'google-auth-library';
+// import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '../config/serverConfig.js';
+// const client = new OAuth2Client(GOOGLE_CLIENT_ID);
+
+export const handleGoogleLogin = asyncHandler(async (req, res) => {
+    const { email, name, uid } = req.body; 
+    console.log("Received user data:", req.body);
+
+    try {
+        let user = await User.findOne({ email });
+        console.log("User found in database:", user);
+
+        if (!user) {
+            console.log("Creating new user...");
+            user = await User.create({
+                firstname: name.split(' ')[0],
+                lastname: name.split(' ')[1] || '',
+                email,
+                password: uid, // Consider hashing this
+                verified: true,
+            });
+            console.log("New user created:", user);
+        }
+
+        const jwtToken = user.generateToken();
+        console.log("JWT Token generated:", jwtToken);
+
+        res
+            .status(200)
+            .cookie('token', jwtToken, COOKIE_OPTIONS)
+            .json(new ApiResponse(200, { user, token: jwtToken }, RESPONSE_MESSAGES.USER_LOGGED_IN));
+    } catch (error) {
+        console.error("Error during Google login:", error);
+        if (error.response) {
+            console.error("Error response from Google API:", error.response.data);
+        }
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 
 export const handleRegister = asyncHandler(async (req, res) => {
     const { firstname, lastname, role, email, password } = req.body;
